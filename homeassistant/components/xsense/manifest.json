@@ -1,0 +1,14 @@
+{
+  "domain": "xsense",
+  "name": "X-Sense Home Security",
+  "codeowners": ["@theosnel"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/xsense",
+  "homekit": {},
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": []
+}
