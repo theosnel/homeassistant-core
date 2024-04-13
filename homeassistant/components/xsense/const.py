@@ -5,6 +5,6 @@ DOMAIN = "xsense"
 MANUFACTURER = "X-Sense"
 COORDINATOR = "coordinator"
 
-DEFAULT_SCAN_INTERVAL = 15
+DEFAULT_SCAN_INTERVAL = 60
 
 LOGGER = logging.getLogger(__package__)
