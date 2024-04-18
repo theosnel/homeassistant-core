@@ -1,39 +1,75 @@
 """Support for xsense sensors."""
 from __future__ import annotations
 
-from collections.abc import Callable
-from dataclasses import dataclass
-
 from xsense.device import Device
+from xsense.entity import Entity
 
 from homeassistant import config_entries
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
-    SensorEntityDescription,
     SensorStateClass,
 )
 from homeassistant.const import (
     CONCENTRATION_PARTS_PER_MILLION,
     PERCENTAGE,
+    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+    EntityCategory,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import StateType
 
 from .const import DOMAIN
 from .coordinator import XSenseDataUpdateCoordinator
-from .entity import XSenseEntity
+from .entity import XSenseEntity, XSenseSensorEntityDescription
 
-
-@dataclass(kw_only=True, frozen=True)
-class XSenseSensorEntityDescription(SensorEntityDescription):
-    """Describes XSense sensor entity."""
-
-    exists_fn: Callable[[Device], bool] = lambda _: True
-    value_fn: Callable[[Device], StateType]
-
+STATION_SENSORS: tuple[XSenseSensorEntityDescription, ...] = (
+    XSenseSensorEntityDescription(
+        key="wifi_rssi",
+        translation_key="wifi_rssi",
+        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        exists_fn=lambda device: "wifiRSSI" in device.data,
+        value_fn=lambda station: station.data["wifiRSSI"],
+    ),
+    XSenseSensorEntityDescription(
+        key="sw_version",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        exists_fn=lambda device: "sw" in device.data,
+        value_fn=lambda station: station.data["sw"],
+    ),
+    XSenseSensorEntityDescription(
+        key="serial_number",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda station: station.sn,
+    ),
+    XSenseSensorEntityDescription(
+        key="ip",
+        translation_key="ip",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        exists_fn=lambda device: "ip" in device.data,
+        value_fn=lambda device: device.data["ip"],
+    ),
+    XSenseSensorEntityDescription(
+        key="alarm_vol",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        exists_fn=lambda device: "alarmVol" in device.data,
+        value_fn=lambda device: device.data["alarmVol"],
+    ),
+    XSenseSensorEntityDescription(
+        key="voice_vol",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        exists_fn=lambda device: "voiceVol" in device.data,
+        value_fn=lambda device: device.data["voiceVol"],
+    ),
+)
 
 SENSORS: tuple[XSenseSensorEntityDescription, ...] = (
     XSenseSensorEntityDescription(
@@ -70,6 +106,12 @@ SENSORS: tuple[XSenseSensorEntityDescription, ...] = (
     ),
 )
 
+# BINARY_SENSORS = tuple[XSenseSensorEntityDescription, ...] = (
+#     XSenseSensorEntityDescription(
+#         key=
+#     )
+# )
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -80,9 +122,17 @@ async def async_setup_entry(
     devices: list[Device] = []
     coordinator: XSenseDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    for k, dev in coordinator.data.items():
+    for _, station in coordinator.data["stations"].items():
         devices.extend(
-            XSenseSensorEntity(coordinator, k, description)
+            XSenseSensorEntity(coordinator, station, description)
+            for description in STATION_SENSORS
+            if description.exists_fn(station)
+        )
+    for _, dev in coordinator.data["devices"].items():
+        devices.extend(
+            XSenseSensorEntity(
+                coordinator, dev, description, station_id=dev.station.entity_id
+            )
             for description in SENSORS
             if description.exists_fn(dev)
         )
@@ -98,17 +148,23 @@ class XSenseSensorEntity(XSenseEntity, SensorEntity):
     def __init__(
         self,
         coordinator: XSenseDataUpdateCoordinator,
-        device_id: str,
+        entity: Entity,
         entity_description: XSenseSensorEntityDescription,
+        station_id: str | None = None,
     ) -> None:
         """Set up the instance."""
+        self._station_id = station_id
         self.entity_description = entity_description
         self._attr_available = False  # This overrides the default
 
-        super().__init__(coordinator, device_id)
+        super().__init__(coordinator, entity, station_id)
 
     @property
     def native_value(self) -> str | int | float | None:
         """Return the state of the sensor."""
-        device = self.coordinator.data[self._dev_id]
+        if self._station_id:
+            device = self.coordinator.data["devices"][self._dev_id]
+        else:
+            device = self.coordinator.data["stations"][self._dev_id]
+
         return self.entity_description.value_fn(device)
