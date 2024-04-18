@@ -2164,6 +2164,9 @@ python-xbox==0.1.2
 # homeassistant.components.uptime_kuma
 pythonkuma==0.3.2
 
+# homeassistant.components.xsense
+python-xsense[async]==0.0.3
+
 # homeassistant.components.tile
 pytile==2024.12.0
 
