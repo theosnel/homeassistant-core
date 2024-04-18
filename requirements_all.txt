@@ -2340,6 +2340,9 @@ python-telegram-bot[socks]==21.0.1
 # homeassistant.components.vlc
 python-vlc==3.0.18122
 
+# homeassistant.components.xsense
+python-xsense[async]==0.0.3
+
 # homeassistant.components.egardia
 pythonegardia==1.0.52
 
