@@ -46,7 +46,7 @@ class XSenseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         LOGGER.debug("_async_update_data")
 
-        return await self.get_all_devices()
+        return await self.get_devices()
 
     async def get_all_devices(self):
         """Retrieve all devices as a dict."""
@@ -61,3 +61,30 @@ class XSenseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         for k, v in devices.items():
             LOGGER.debug(f"{k}: {v}: {v.data}")
         return devices
+
+    async def get_stations(self):
+        """Retrieve all stations."""
+        stations = []
+        await self.xsense.load_all()
+        for _, h in self.xsense.houses.items():
+            LOGGER.info(f"house: {h}")
+            for _, s in h.stations.items():
+                await self.xsense.get_station_state(s)
+                LOGGER.debug(f"station: {s}")
+                await self.xsense.get_state(s)
+                stations.append(s)
+        return stations
+
+    async def get_devices(self):
+        """Retrieve all devices from the xsense account."""
+        stations = {}
+        devices = {}
+
+        await self.xsense.load_all()
+        for _, h in self.xsense.houses.items():
+            stations.update(h.stations.items())
+            for _, s in h.stations.items():
+                await self.xsense.get_station_state(s)
+                await self.xsense.get_state(s)
+                devices.update(s.devices.items())
+        return {"stations": stations, "devices": devices}
