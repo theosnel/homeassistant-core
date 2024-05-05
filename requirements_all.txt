@@ -2293,7 +2293,7 @@ python-telegram-bot==13.1
 python-vlc==3.0.18122
 
 # homeassistant.components.xsense
-python-xsense[async]==0.0.6
+python-xsense[async]==0.0.7
 
 # homeassistant.components.egardia
 pythonegardia==1.0.52
