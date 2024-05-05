@@ -2165,7 +2165,7 @@ python-xbox==0.1.2
 pythonkuma==0.3.2
 
 # homeassistant.components.xsense
-python-xsense[async]==0.0.5
+python-xsense[async]==0.0.6
 
 # homeassistant.components.tile
 pytile==2024.12.0
