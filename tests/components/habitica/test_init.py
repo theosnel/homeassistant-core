@@ -1,4 +1,5 @@
 """Test the habitica module."""
+
 from http import HTTPStatus
 
 import pytest
@@ -54,7 +55,7 @@ def common_requests(aioclient_mock):
                 "api_user": "test-api-user",
                 "profile": {"name": TEST_USER_NAME},
                 "stats": {
-                    "class": "test-class",
+                    "class": "warrior",
                     "con": 1,
                     "exp": 2,
                     "gp": 3,
@@ -77,7 +78,11 @@ def common_requests(aioclient_mock):
             f"https://habitica.com/api/v3/tasks/user?type={task_type}",
             json={
                 "data": [
-                    {"text": f"this is a mock {task_type} #{task}", "id": f"{task}"}
+                    {
+                        "text": f"this is a mock {task_type} #{task}",
+                        "id": f"{task}",
+                        "type": TASKS_TYPES[task_type].path[0],
+                    }
                     for task in range(n_tasks)
                 ]
             },
