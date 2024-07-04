@@ -1797,7 +1797,7 @@ python-technove==1.2.2
 python-telegram-bot[socks]==21.0.1
 
 # homeassistant.components.xsense
-python-xsense[async]==0.0.7
+python-xsense[async]==0.0.9
 
 # homeassistant.components.tile
 pytile==2023.12.0
