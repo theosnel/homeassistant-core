@@ -1,4 +1,5 @@
 """Constants for the X-Sense Home Security integration."""
+
 import logging
 
 DOMAIN = "xsense"
