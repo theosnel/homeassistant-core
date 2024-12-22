@@ -54,6 +54,14 @@ SENSORS: tuple[XSenseBinarySensorEntityDescription, ...] = (
         exists_fn=lambda entity: "activate" in entity.data,
         value_fn=lambda entity: entity.data["activate"],
     ),
+    XSenseBinarySensorEntityDescription(
+        key="door",
+        translation_key="door",
+        device_class=BinarySensorDeviceClass.DOOR,
+        name="Door Sensor",
+        value_fn=lambda device: device.data["isOpen"] == "1",
+        exists_fn=lambda device: "isOpen" in device.data,
+    ),
 )
 
 MQTTSensor = XSenseBinarySensorEntityDescription(
