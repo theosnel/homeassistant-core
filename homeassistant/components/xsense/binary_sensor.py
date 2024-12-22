@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from dataclasses import dataclass
+
 from xsense.device import Device
 from xsense.entity import Entity
 from xsense.station import Station
@@ -10,6 +13,7 @@ from homeassistant import config_entries
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
+    BinarySensorEntityDescription,
 )
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
@@ -17,7 +21,16 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .coordinator import XSenseDataUpdateCoordinator
-from .entity import XSenseBinarySensorEntityDescription, XSenseEntity
+from .entity import XSenseEntity
+
+
+@dataclass(kw_only=True, frozen=True)
+class XSenseBinarySensorEntityDescription(BinarySensorEntityDescription):
+    """Describes XSense binary-sensor entity."""
+
+    exists_fn: Callable[[Entity], bool] = lambda _: True
+    value_fn: Callable[[Entity], bool]
+
 
 SENSORS: tuple[XSenseBinarySensorEntityDescription, ...] = (
     XSenseBinarySensorEntityDescription(
