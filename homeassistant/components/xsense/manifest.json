@@ -9,7 +9,7 @@
   "integration_type": "hub",
   "iot_class": "cloud_polling",
   "quality_scale": "legacy",
-  "requirements": ["python-xsense[async]==0.0.14", "paho-mqtt==1.6.1"],
+  "requirements": ["python-xsense[async]==0.0.15", "paho-mqtt==1.6.1"],
   "ssdp": [],
   "zeroconf": []
 }
