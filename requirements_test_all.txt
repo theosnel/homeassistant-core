@@ -1452,6 +1452,7 @@ ovoenergy==3.0.2
 p1monitor==3.2.0
 
 # homeassistant.components.mqtt
+# homeassistant.components.xsense
 paho-mqtt==2.1.0
 
 # homeassistant.components.panasonic_viera
@@ -2165,7 +2166,7 @@ python-xbox==0.1.2
 pythonkuma==0.3.2
 
 # homeassistant.components.xsense
-python-xsense[async]==0.0.15
+python-xsense[async]==0.0.16
 
 # homeassistant.components.tile
 pytile==2024.12.0

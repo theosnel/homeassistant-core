@@ -1622,6 +1622,7 @@ ovoenergy==2.0.0
 p1monitor==3.1.0
 
 # homeassistant.components.mqtt
+# homeassistant.components.xsense
 paho-mqtt==2.1.0
 
 # homeassistant.components.panasonic_bluray
@@ -2485,7 +2486,7 @@ python-telegram-bot[socks]==21.5
 python-vlc==3.0.18122
 
 # homeassistant.components.xsense
-python-xsense[async]==0.0.15
+python-xsense[async]==0.0.16
 
 # homeassistant.components.egardia
 pythonegardia==1.0.52
