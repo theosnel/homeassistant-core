@@ -93,7 +93,6 @@ SENSORS: tuple[XSenseSensorEntityDescription, ...] = (
     XSenseSensorEntityDescription(
         key="alarm_vol",
         translation_key="alarm_vol",
-        entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:volume-high",
         state_class=SensorStateClass.MEASUREMENT,
@@ -103,7 +102,6 @@ SENSORS: tuple[XSenseSensorEntityDescription, ...] = (
     XSenseSensorEntityDescription(
         key="voice_vol",
         translation_key="voice_vol",
-        entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:volume-high",
@@ -146,6 +144,7 @@ SENSORS: tuple[XSenseSensorEntityDescription, ...] = (
         key="rf_level",
         translation_key="rf_level",
         device_class=SensorDeviceClass.ENUM,
+        entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:signal",
         name="Signal strength",
         options=STATE_SIGNAL,
